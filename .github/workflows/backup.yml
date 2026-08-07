@@ -1,2 +1,9 @@
-- name: Download Google Sheet CSV
-  run: curl -sL "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv" -o backup.csv
+import urllib.request
+
+url = "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv&gid=0"
+req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+
+with urllib.request.urlopen(req) as response:
+    data = response.read().decode('utf-8')
+    with open("backup.csv", "w", encoding="utf-8") as f:
+        f.write(data)
