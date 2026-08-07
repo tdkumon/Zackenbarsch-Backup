@@ -1,1 +1,1 @@
-curl -s "[https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv](https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv)" > backup.csv
+curl -sL "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv" -o backup.csv
