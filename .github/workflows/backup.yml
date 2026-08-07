@@ -1,1 +1,3 @@
-curl -sL "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv" -o backup.csv
+      - name: Download Sheet CSV
+        run: |
+          curl -sL "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/export?format=csv" -o backup.csv
