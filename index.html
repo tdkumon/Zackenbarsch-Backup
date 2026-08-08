@@ -81,110 +81,116 @@
 
   <div id="table-container">Loading data...</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script>
-    let currentYear = '2026';
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+  let currentYear = '2026';
 
-    function switchTab(year) {
-      currentYear = year;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent === year);
-      });
-      loadSheetData(year);
-    }
+  function switchTab(year) {
+    currentYear = year;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent === year);
+    });
+    loadSheetData(year);
+  }
 
-    function loadSheetData(year) {
-      fetch(`backup-${year}.csv?v=` + Date.now())
-        .then(response => response.text())
-        .then(csvData => {
-          Papa.parse(csvData, {
-            complete: function(results) {
-              const rows = results.data;
+  function loadSheetData(year) {
+    fetch(`backup-${year}.csv?v=` + Date.now())
+      .then(response => response.text())
+      .then(csvData => {
+        Papa.parse(csvData, {
+          complete: function(results) {
+            const rows = results.data;
 
-              let titleIdx = -1;
-              let startIdx = -1;
-              let finishIdx = -1;
-              let extraIdx = -1;
-              let hasReachedHeader = false;
+            let titleIdx = -1;
+            let startIdx = -1;
+            let finishIdx = -1;
+            let extraIdx = -1;
+            let hasReachedHeader = false;
 
-              let tableHeadersHTML = '';
-              let tableBodyHTML = '';
+            let tableHeadersHTML = '';
+            let tableBodyHTML = '';
 
-              rows.forEach((row) => {
-                if (!hasReachedHeader) {
-                  // Find header row containing "title"
-                  const titleCellIndex = row.findIndex(cell => cell && cell.toLowerCase().includes('title'));
-                  if (titleCellIndex !== -1) {
-                    hasReachedHeader = true;
+            rows.forEach((row) => {
+              if (!hasReachedHeader) {
+                // Match ONLY when a cell strictly equals "title"
+                const hasTitleHeader = row.some(cell => cell && cell.trim().toLowerCase() === 'title');
 
-                    // Dynamically map column positions based on header text
-                    row.forEach((cell, idx) => {
-                      const text = cell ? cell.trim().toLowerCase() : '';
-                      if (text.includes('title')) titleIdx = idx;
-                      else if (text.includes('start date')) startIdx = idx;
-                      else if (text.includes('finish date')) finishIdx = idx;
-                      else if (text.includes('extra')) extraIdx = idx;
-                    });
+                if (hasTitleHeader) {
+                  hasReachedHeader = true;
 
-                    // Build table headers dynamically based on columns found
-                    tableHeadersHTML = '<tr>';
-                    if (titleIdx !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
-                    if (startIdx !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
-                    if (finishIdx !== -1) tableHeadersHTML += '<th class="col-date">finish date</th>';
-                    if (extraIdx !== -1) tableHeadersHTML += '<th class="col-extra">extra</th>';
-                    tableHeadersHTML += '</tr>';
-                  }
-                  return;
+                  // Map column positions dynamically
+                  row.forEach((cell, idx) => {
+                    const text = cell ? cell.trim().toLowerCase() : '';
+                    if (text === 'title') titleIdx = idx;
+                    else if (text.includes('start')) startIdx = idx;
+                    else if (text.includes('finish')) finishIdx = idx;
+                    else if (text.includes('extra') || text.includes('playtime')) extraIdx = idx;
+                  });
+
+                  // Fallbacks if header cells in Google Sheets were empty or unmapped
+                  if (titleIdx === -1) titleIdx = 2;
+                  if (startIdx === -1 && year !== '2024') startIdx = 4;
+                  if (finishIdx === -1) finishIdx = (year === '2024' && startIdx === -1) ? 4 : 5;
+                  if (extraIdx === -1) extraIdx = 6;
+
+                  // Build header HTML dynamically
+                  tableHeadersHTML = '<tr>';
+                  if (titleIdx !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
+                  if (startIdx !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
+                  if (finishIdx !== -1) tableHeadersHTML += '<th class="col-date">finish date</th>';
+                  if (extraIdx !== -1) tableHeadersHTML += '<th class="col-extra">extra</th>';
+                  tableHeadersHTML += '</tr>';
                 }
+                return;
+              }
 
-                const titleText = titleIdx !== -1 && row[titleIdx] ? row[titleIdx].trim() : '';
+              const titleText = titleIdx !== -1 && row[titleIdx] ? row[titleIdx].trim() : '';
 
-                // Skip empty or dummy rows
-                if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
-                  return;
-                }
+              // Skip empty or dummy rows
+              if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
+                return;
+              }
 
-                // Total visible column count for section headers colspan
-                const activeColCount = [titleIdx, startIdx, finishIdx, extraIdx].filter(i => i !== -1).length;
+              const activeColCount = [titleIdx, startIdx, finishIdx, extraIdx].filter(i => i !== -1).length;
 
-                // Section header rows ending with ":"
-                if (titleText.endsWith(':')) {
-                  tableBodyHTML += `<tr><td colspan="${activeColCount}" class="section-header">${titleText}</td></tr>`;
-                  return;
-                }
+              // Section header rows ending with ":"
+              if (titleText.endsWith(':')) {
+                tableBodyHTML += `<tr><td colspan="${activeColCount}" class="section-header">${titleText}</td></tr>`;
+                return;
+              }
 
-                // Regular data rows
-                tableBodyHTML += '<tr>';
-                if (titleIdx !== -1) {
-                  tableBodyHTML += `<td class="col-title">${row[titleIdx] ? row[titleIdx].trim() : ''}</td>`;
-                }
-                if (startIdx !== -1) {
-                  let startVal = row[startIdx] ? row[startIdx].trim() : '';
-                  if (startVal === '') startVal = '→';
-                  tableBodyHTML += `<td class="col-date">${startVal}</td>`;
-                }
-                if (finishIdx !== -1) {
-                  tableBodyHTML += `<td class="col-date">${row[finishIdx] ? row[finishIdx].trim() : ''}</td>`;
-                }
-                if (extraIdx !== -1) {
-                  tableBodyHTML += `<td class="col-extra">${row[extraIdx] ? row[extraIdx].trim() : ''}</td>`;
-                }
-                tableBodyHTML += '</tr>';
-              });
+              // Regular data rows
+              tableBodyHTML += '<tr>';
+              if (titleIdx !== -1) {
+                tableBodyHTML += `<td class="col-title">${row[titleIdx] ? row[titleIdx].trim() : ''}</td>`;
+              }
+              if (startIdx !== -1) {
+                let startVal = row[startIdx] ? row[startIdx].trim() : '';
+                if (startVal === '') startVal = '→';
+                tableBodyHTML += `<td class="col-date">${startVal}</td>`;
+              }
+              if (finishIdx !== -1) {
+                tableBodyHTML += `<td class="col-date">${row[finishIdx] ? row[finishIdx].trim() : ''}</td>`;
+              }
+              if (extraIdx !== -1) {
+                tableBodyHTML += `<td class="col-extra">${row[extraIdx] ? row[extraIdx].trim() : ''}</td>`;
+              }
+              tableBodyHTML += '</tr>';
+            });
 
-              document.getElementById('table-container').innerHTML = `
-                <table>
-                  <thead>${tableHeadersHTML}</thead>
-                  <tbody>${tableBodyHTML}</tbody>
-                </table>
-              `;
-            }
-          });
+            document.getElementById('table-container').innerHTML = `
+              <table>
+                <thead>${tableHeadersHTML}</thead>
+                <tbody>${tableBodyHTML}</tbody>
+              </table>
+            `;
+          }
         });
-    }
+      });
+  }
 
-    // Initial load for 2026
-    loadSheetData('2026');
+  // Initial load for 2026
+  loadSheetData('2026');
   </script>
 </body>
 </html>
