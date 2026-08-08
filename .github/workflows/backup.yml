@@ -15,9 +15,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Sheet CSV
+      - name: Download Sheet CSVs
         run: |
-          curl -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0" -o backup.csv
+          curl -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2026" -o backup-2026.csv
+          curl -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2025" -o backup-2025.csv
+          curl -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2024" -o backup-2024.csv
 
       - name: Commit and Push Updated Backup
         run: |
