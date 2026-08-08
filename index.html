@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Backup View</title>
+  <title>public Zackenbarsch backup</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -63,15 +63,32 @@
 
     td.section-header {
       font-weight: 700;
-      padding-top: 300px;
+      padding-top: 500px;
       padding-bottom: 10px;
       color: #495057;
       border-bottom: 2px solid #dee2e6;
-      background-color: #f8f9fa;
+    }
+
+    .last-updated-badge {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: #6c757d;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
+
+  <h1>backup of my tracking google sheet</h1>
+  <a href="https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU">link to google sheets</a>
+  <a href="https://rentry.co/tdkumon">back to rentry page</a>
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('2026')">2026</button>
@@ -80,6 +97,8 @@
   </div>
 
   <div id="table-container">Loading data...</div>
+
+  <div id="last-updated" class="last-updated-badge">Loading update time...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
@@ -175,6 +194,16 @@
       });
   }
 
+  // Load Last Updated Timestamp
+    fetch('last-updated.txt?v=' + Date.now())
+      .then(response => response.text())
+      .then(timestamp => {
+        document.getElementById('last-updated').textContent = `Last updated: ${timestamp.trim()}`;
+      })
+      .catch(() => {
+        document.getElementById('last-updated').style.display = 'none';
+      });
+  
   // Initial load for 2026
   loadSheetData('2026');
 </script>
