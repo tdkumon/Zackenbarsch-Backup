@@ -85,6 +85,13 @@
 <script>
   let currentYear = '2026';
 
+  // Exact column positions mapped directly from your CSV layouts
+  const YEAR_CONFIGS = {
+    '2026': { title: 2, start: 4, finish: 5, extra: 6 },
+    '2025': { title: 2, start: 3, finish: 4, extra: 5 },
+    '2024': { title: 1, start: -1, finish: 2, extra: 3 }
+  };
+
   function switchTab(year) {
     currentYear = year;
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -94,6 +101,8 @@
   }
 
   function loadSheetData(year) {
+    const cfg = YEAR_CONFIGS[year];
+
     fetch(`backup-${year}.csv?v=` + Date.now())
       .then(response => response.text())
       .then(csvData => {
@@ -101,75 +110,34 @@
           complete: function(results) {
             const rows = results.data;
 
-            let titleIdx = -1;
-            let startIdx = -1;
-            let finishIdx = -1;
-            let extraIdx = -1;
-            let hasReachedHeader = false;
-
-            let tableHeadersHTML = '';
+            let hasReachedData = false;
             let tableBodyHTML = '';
 
+            // Build headers dynamically based on active columns for the year
+            let tableHeadersHTML = '<tr>';
+            if (cfg.title !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
+            if (cfg.start !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
+            if (cfg.finish !== -1) tableHeadersHTML += '<th class="col-date">finish date</th>';
+            if (cfg.extra !== -1) tableHeadersHTML += '<th class="col-extra">extra</th>';
+            tableHeadersHTML += '</tr>';
+
+            const activeColCount = [cfg.title, cfg.start, cfg.finish, cfg.extra].filter(i => i !== -1).length;
+
             rows.forEach((row) => {
-              if (!hasReachedHeader) {
-                // Find header row containing "title"
-                const hasTitleHeader = row.some(cell => cell && cell.trim().toLowerCase().includes('title'));
-
-                if (hasTitleHeader) {
-                  hasReachedHeader = true;
-
-                  // Map column positions by header text keywords
-                  row.forEach((cell, idx) => {
-                    const text = cell ? cell.trim().toLowerCase() : '';
-                    if (!text) return;
-
-                    if (text.includes('title')) {
-                      titleIdx = idx;
-                    } else if (text.includes('start')) {
-                      startIdx = idx;
-                    } else if (text.includes('finish') || text.includes('end') || (text.includes('date') && !text.includes('start'))) {
-                      finishIdx = idx;
-                    } else if (text.includes('extra') || text.includes('play') || text.includes('time') || text.includes('hour') || text.includes('note')) {
-                      extraIdx = idx;
-                    }
-                  });
-
-                  // Safely assign any unmapped columns to avoid index collisions
-                  const assignedIndices = [titleIdx, startIdx, finishIdx, extraIdx].filter(i => i !== -1);
-                  row.forEach((cell, idx) => {
-                    if (idx <= titleIdx || assignedIndices.includes(idx) || !cell || cell.trim() === '') return;
-
-                    if (finishIdx === -1) {
-                      finishIdx = idx;
-                      assignedIndices.push(idx);
-                    } else if (extraIdx === -1) {
-                      extraIdx = idx;
-                      assignedIndices.push(idx);
-                    } else if (startIdx === -1 && year !== '2024') {
-                      startIdx = idx;
-                      assignedIndices.push(idx);
-                    }
-                  });
-
-                  // Build table headers dynamically based on mapped columns
-                  tableHeadersHTML = '<tr>';
-                  if (titleIdx !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
-                  if (startIdx !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
-                  if (finishIdx !== -1) tableHeadersHTML += '<th class="col-date">finish date</th>';
-                  if (extraIdx !== -1) tableHeadersHTML += '<th class="col-extra">extra</th>';
-                  tableHeadersHTML += '</tr>';
+              // Locate the header row by looking for "title" in the designated title column
+              if (!hasReachedData) {
+                if (row[cfg.title] && row[cfg.title].trim().toLowerCase() === 'title') {
+                  hasReachedData = true;
                 }
                 return;
               }
 
-              const titleText = titleIdx !== -1 && row[titleIdx] ? row[titleIdx].trim() : '';
+              const titleText = row[cfg.title] ? row[cfg.title].trim() : '';
 
-              // Skip empty or dummy rows
+              // Skip empty rows or dummy "x" rows
               if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
                 return;
               }
-
-              const activeColCount = [titleIdx, startIdx, finishIdx, extraIdx].filter(i => i !== -1).length;
 
               // Section header rows ending with ":"
               if (titleText.endsWith(':')) {
@@ -177,21 +145,21 @@
                 return;
               }
 
-              // Regular data rows
+              // Data rows
               tableBodyHTML += '<tr>';
-              if (titleIdx !== -1) {
-                tableBodyHTML += `<td class="col-title">${row[titleIdx] ? row[titleIdx].trim() : ''}</td>`;
+              if (cfg.title !== -1) {
+                tableBodyHTML += `<td class="col-title">${titleText}</td>`;
               }
-              if (startIdx !== -1) {
-                let startVal = row[startIdx] ? row[startIdx].trim() : '';
+              if (cfg.start !== -1) {
+                let startVal = row[cfg.start] ? row[cfg.start].trim() : '';
                 if (startVal === '') startVal = '→';
                 tableBodyHTML += `<td class="col-date">${startVal}</td>`;
               }
-              if (finishIdx !== -1) {
-                tableBodyHTML += `<td class="col-date">${row[finishIdx] ? row[finishIdx].trim() : ''}</td>`;
+              if (cfg.finish !== -1) {
+                tableBodyHTML += `<td class="col-date">${row[cfg.finish] ? row[cfg.finish].trim() : ''}</td>`;
               }
-              if (extraIdx !== -1) {
-                tableBodyHTML += `<td class="col-extra">${row[extraIdx] ? row[extraIdx].trim() : ''}</td>`;
+              if (cfg.extra !== -1) {
+                tableBodyHTML += `<td class="col-extra">${row[cfg.extra] ? row[cfg.extra].trim() : ''}</td>`;
               }
               tableBodyHTML += '</tr>';
             });
