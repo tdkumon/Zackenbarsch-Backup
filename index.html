@@ -201,6 +201,9 @@ function loadSheetData(year) {
   const cfg = YEAR_CONFIGS[year];
   const container = document.getElementById('table-container');
 
+  // Immediately remove old content so it doesn't linger while fetching
+  container.textContent = 'Loading data...';
+
   fetch(`backup-${year}.csv?v=` + Date.now())
     .then(response => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
