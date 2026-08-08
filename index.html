@@ -36,7 +36,11 @@
     }
     
     th:first-child, td:first-child {
-      width: 600px;
+      width: 700px;
+    }
+
+    th:nth-child(4), td:nth-child(4) {
+      width: 300px;
     }
   </style>
 </head>
@@ -47,7 +51,7 @@
   <!-- PapaParse library to parse CSV data -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-  // C (Title), E (Start Date), F (Finish Date), G (Extra)
+  // Columns to pull: C (Title), E (Start Date), F (Finish Date), G (Extra)
   const ALLOWED_COLUMNS = [2, 4, 5, 6];
 
   fetch('backup.csv')
@@ -56,40 +60,48 @@
       Papa.parse(csvData, {
         complete: function(results) {
           const rows = results.data;
-          let html = '<table>';
-          let isFirstDisplayedRow = true;
-          let hasReachedHeader = false;
+          
+          // Fixed table header
+          let html = `
+            <table>
+              <thead>
+                <tr>
+                  <th>title</th>
+                  <th>start date</th>
+                  <th>finish date</th>
+                  <th>extra</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          let hasReachedData = false;
 
           rows.forEach((row) => {
-            // Dynamically locate the table header by finding "title" in Column C
-            if (!hasReachedHeader) {
+            // Locate "title" in Column C to start reading data
+            if (!hasReachedData) {
               if (row[2] && row[2].trim().toLowerCase() === 'title') {
-                hasReachedHeader = true;
-              } else {
-                return; // Skip all rows preceding "title"
+                hasReachedData = true;
               }
+              return; // Skip the sheet's header row since it's hardcoded above
             }
 
-            // Ignore rows that consist entirely of empty commas (,,,,,,)
+            // Skip empty rows
             if (row.every(cell => cell.trim() === '')) return;
 
             html += '<tr>';
             row.forEach((cell, colIndex) => {
               if (!ALLOWED_COLUMNS.includes(colIndex)) return;
-
-              const cellTag = isFirstDisplayedRow ? 'th' : 'td';
-              html += `<${cellTag}>${cell}</${cellTag}>`;
+              html += `<td>${cell}</td>`;
             });
             html += '</tr>';
-
-            isFirstDisplayedRow = false;
           });
 
-          html += '</table>';
+          html += '</tbody></table>';
           document.getElementById('table-container').innerHTML = html;
         }
       });
     });
-</script>
+  </script>
 </body>
 </html>
