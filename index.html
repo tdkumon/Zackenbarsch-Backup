@@ -59,7 +59,7 @@
   // Columns to pull: C (Title), E (Start Date), F (Finish Date), G (Extra)
   const ALLOWED_COLUMNS = [2, 4, 5, 6];
 
-  fetch('backup.csv')
+  fetch('backup.csv?v=' + Date.now())
     .then(response => response.text())
     .then(csvData => {
       Papa.parse(csvData, {
