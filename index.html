@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=Noto+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <title>tdk's tracking sheet (backup)</title>
 <style>
@@ -20,12 +23,12 @@
   }
   
   a:hover {
-    color: #38bdf8;
-    text-decoration-color: #38bdf8;
+    color: #7dd3fc;
+    text-decoration-color: #7dd3fc;
   }
   
   a:visited {
-    color: #c084fc;
+    color: #38bdf8
     text-decoration-color: rgba(192, 132, 252, 0.4);
   }
   
@@ -119,26 +122,46 @@
   body[data-year="2026"] th {
     background-color: #46bdc6;
     color: #ffffff;
-    font-family: 'Comic Sans MS';
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
     border-bottom: none;
   }
 
   body[data-year="2026"] tr {
     background-color: #242832;
     color: #ffffff;
-    font-family: 'Noto Sans';
+    font-family: 'Noto Sans', sans-serif;
     border: 1px solid #3d4356;
   }
 
   body[data-year="2026"] td {
     border: 1px solid #3d4356;
   }
+
+  .header-container {
+    display: flex;
+    align-items: center; /* Centers the H1 vertically relative to the image */
+    gap: 16px;           /* Spacing between the image and the title */
+    margin-bottom: 12px; /* Spacing between the header row and the links below */
+  }
+  
+  .header-container h1 {
+    margin: 0; /* Removes default H1 margins so alignment is exact */
+  }
+  
+  .header-img {
+    width: 135px;         /* Set your desired size */
+    height: 135px;        /* Matches width to keep it square */
+    object-fit: cover;   /* Prevents images from stretching if aspect ratio differs */
+  }
   
   </style>
 </head>
 <body>
   <div class="asd">
-    <h1>backup of my tracking google sheet</h1>
+    <div class="header-container">
+      <img src="media/shinobu.png" alt="Icon" class="header-img">
+      <h1>backup of my tracking google sheet</h1>
+    </div>
     <a href="https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU">link to google sheets</a><br>
     <a href="https://rentry.co/tdkumon">back to rentry page</a>
   </div>
