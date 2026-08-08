@@ -10,6 +10,30 @@
     background-color: #fafafa;
     color: #333;
   }
+
+  a {
+    color: #38bdf8;
+    text-decoration: underline;
+    text-decoration-color: rgba(56, 189, 248, 0.4);
+    text-underline-offset: 3px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+  
+  a:hover {
+    color: #7dd3fc;
+    text-decoration-color: #7dd3fc;
+  }
+  
+  a:visited {
+    color: #c084fc;
+    text-decoration-color: rgba(192, 132, 252, 0.4);
+  }
+  
+  a:focus-visible {
+    outline: 2px solid #38bdf8;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
   
   .nav-tabs {
     display: flex;
@@ -96,13 +120,14 @@
     background-color: #46bdc6;
     color: #ffffff;
     font-family: 'Comic Sans MS';
+    border-bottom: none;
   }
 
   body[data-year="2026"] tr {
     background-color: #242832;
     color: #ffffff;
     font-family: 'Noto Sans';
-    border-bottom: 1px solid #3d4356;
+    border: 1px solid #3d4356;
   }
   
   </style>
