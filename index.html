@@ -53,6 +53,15 @@
     td:nth-child(2), td:nth-child(3) {
       text-align: center;
     }
+
+    td.section-header {
+      font-weight: 700;
+      padding-top: 32px;
+      padding-bottom: 10px;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
+      background-color: #f8f9fa;
+    }
   </style>
 </head>
 <body>
@@ -62,7 +71,6 @@
 <!-- PapaParse library to parse CSV data -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-  // Columns to pull: C (Title), E (Start Date), F (Finish Date), G (Extra)
   const ALLOWED_COLUMNS = [2, 4, 5, 6];
 
   fetch('backup.csv?v=' + Date.now())
@@ -88,25 +96,35 @@
           let hasReachedData = false;
 
           rows.forEach((row) => {
-            // Check if any cell in the row contains "title" to locate the header row
             if (!hasReachedData) {
-              const isHeaderRow = row.some(cell => cell && cell.toLowerCase().includes('title'));
-              if (isHeaderRow) {
+              if (row.some(cell => cell && cell.toLowerCase().includes('title'))) {
                 hasReachedData = true;
               }
-              return; // Skip the header row so it isn't duplicated inside tbody
+              return;
             }
 
-            // Skip empty rows
-            if (!row || row.every(cell => !cell || cell.trim() === '')) return;
+            const titleText = row[2] ? row[2].trim() : '';
 
+            // Skip empty rows or dummy "x" rows
+            if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
+              return;
+            }
+
+            // Detect section headers ending with ":" (e.g. "started but not finished:")
+            if (titleText.endsWith(':')) {
+              html += `<tr><td colspan="4" class="section-header">${titleText}</td></tr>`;
+              return;
+            }
+
+            // Regular data rows
             html += '<tr>';
             row.forEach((cell, colIndex) => {
               if (!ALLOWED_COLUMNS.includes(colIndex)) return;
 
+              let content = cell ? cell.trim() : '';
+
               // If Start Date (Col E / Index 4) is empty, display the arrow symbol
-              let content = cell;
-              if (colIndex === 4 && (!cell || cell.trim() === '')) {
+              if (colIndex === 4 && content === '') {
                 content = '→';
               }
 
