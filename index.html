@@ -34,8 +34,8 @@
     tr:last-child {
       border-bottom: none;
     }
-
-    th:nth-child(3), td:nth-child(3) {
+    
+    th:first-child, td:first-child {
       width: 600px;
     }
   </style>
@@ -45,47 +45,46 @@
   <div id="table-container">Loading data...</div>
 
   <!-- PapaParse library to parse CSV data -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script>
-    // CONFIGURATION
-    const START_ROW = 1;           // Starts rendering from Row 7
-    const HIDDEN_COLUMN_INDEX = 3; // 0 = A, 1 = B, 2 = C, 3 = D
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+  // Define which columns to display (0=A, 1=B, 2=C, 3=D, 4=E, 5=F, 6=G)
+  const ALLOWED_COLUMNS = [2, 4, 5, 6]; // C (Title), E (Start Date), F (Finish Date), G (Extra)
+  const START_ROW = 7; // Starts rendering from Row 7 of your sheet
 
-    fetch('backup.csv')
-      .then(response => response.text())
-      .then(csvData => {
-        Papa.parse(csvData, {
-          complete: function(results) {
-            const rows = results.data;
-            let html = '<table>';
-            let isFirstDisplayedRow = true;
+  fetch('backup.csv')
+    .then(response => response.text())
+    .then(csvData => {
+      Papa.parse(csvData, {
+        complete: function(results) {
+          const rows = results.data;
+          let html = '<table>';
+          let isFirstDisplayedRow = true;
 
-            rows.forEach((row, rowIndex) => {
-              // Skip rows before row 7 (Index 0 is Row 1, so Row 7 is Index 6)
-              if (rowIndex < START_ROW - 1) return;
+          rows.forEach((row, rowIndex) => {
+            // Skip rows before START_ROW
+            if (rowIndex < START_ROW - 1) return;
 
-              // Ignore completely empty rows
-              if (row.length === 1 && row[0].trim() === '') return;
+            // Ignore completely empty rows
+            if (row.length === 1 && row[0].trim() === '') return;
 
-              html += '<tr>';
-              row.forEach((cell, colIndex) => {
-                // Skip Column D
-                if (colIndex === HIDDEN_COLUMN_INDEX) return;
+            html += '<tr>';
+            row.forEach((cell, colIndex) => {
+              // Only render columns defined in ALLOWED_COLUMNS
+              if (!ALLOWED_COLUMNS.includes(colIndex)) return;
 
-                // Treat the first displayed row (Row 7) as the table header header (th)
-                const cellTag = isFirstDisplayedRow ? 'th' : 'td';
-                html += `<${cellTag}>${cell}</${cellTag}>`;
-              });
-              html += '</tr>';
-
-              isFirstDisplayedRow = false;
+              const cellTag = isFirstDisplayedRow ? 'th' : 'td';
+              html += `<${cellTag}>${cell}</${cellTag}>`;
             });
+            html += '</tr>';
 
-            html += '</table>';
-            document.getElementById('table-container').innerHTML = html;
-          }
-        });
+            isFirstDisplayedRow = false;
+          });
+
+          html += '</table>';
+          document.getElementById('table-container').innerHTML = html;
+        }
       });
+    });
   </script>
 </body>
 </html>
