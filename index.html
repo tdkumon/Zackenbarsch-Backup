@@ -85,6 +85,26 @@
   .asd {
     margin-bottom: 50px;
   }
+  
+  body[data-year="2026"] {
+    background-color: #242832;
+    color: #ffffff;
+    font-family: 'Roboto';
+  }
+
+  body[data-year="2026"] th {
+    background-color: #46bdc6;
+    color: #ffffff;
+    font-family: 'Comic Sans MS';
+  }
+
+  body[data-year="2026"] tr {
+    background-color: #242832;
+    color: #ffffff;
+    font-family: 'Noto Sans';
+    border-bottom: 1px solid #3d4356;
+  }
+  
   </style>
 </head>
 <body>
@@ -116,11 +136,14 @@
 
   function switchTab(year) {
     currentYear = year;
+    document.body.dataset.year = year; // Updates <body data-year="2026">
+    
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.classList.toggle('active', btn.textContent === year);
     });
     loadSheetData(year);
   }
+  
 function loadSheetData(year) {
   const cfg = YEAR_CONFIGS[year];
   const container = document.getElementById('table-container');
@@ -252,7 +275,7 @@ function loadSheetData(year) {
         document.getElementById('last-updated').style.display = 'none';
       });
   
-  loadSheetData('2026');
+  switchTab('2026');
 </script>
 </body>
 </html>
