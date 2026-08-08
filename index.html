@@ -47,9 +47,8 @@
   <!-- PapaParse library to parse CSV data -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-  // Define which columns to display (0=A, 1=B, 2=C, 3=D, 4=E, 5=F, 6=G)
-  const ALLOWED_COLUMNS = [2, 4, 5, 6]; // C (Title), E (Start Date), F (Finish Date), G (Extra)
-  const START_ROW = 6; // Starts rendering from Row 7 of your sheet
+  // C (Title), E (Start Date), F (Finish Date), G (Extra)
+  const ALLOWED_COLUMNS = [2, 4, 5, 6];
 
   fetch('backup.csv')
     .then(response => response.text())
@@ -59,17 +58,23 @@
           const rows = results.data;
           let html = '<table>';
           let isFirstDisplayedRow = true;
+          let hasReachedHeader = false;
 
-          rows.forEach((row, rowIndex) => {
-            // Skip rows before START_ROW
-            if (rowIndex < START_ROW - 1) return;
+          rows.forEach((row) => {
+            // Dynamically locate the table header by finding "title" in Column C
+            if (!hasReachedHeader) {
+              if (row[2] && row[2].trim().toLowerCase() === 'title') {
+                hasReachedHeader = true;
+              } else {
+                return; // Skip all rows preceding "title"
+              }
+            }
 
-            // Ignore completely empty rows
-            if (row.length === 1 && row[0].trim() === '') return;
+            // Ignore rows that consist entirely of empty commas (,,,,,,)
+            if (row.every(cell => cell.trim() === '')) return;
 
             html += '<tr>';
             row.forEach((cell, colIndex) => {
-              // Only render columns defined in ALLOWED_COLUMNS
               if (!ALLOWED_COLUMNS.includes(colIndex)) return;
 
               const cellTag = isFirstDisplayedRow ? 'th' : 'td';
@@ -85,6 +90,6 @@
         }
       });
     });
-  </script>
+</script>
 </body>
 </html>
