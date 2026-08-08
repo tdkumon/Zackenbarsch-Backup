@@ -53,8 +53,7 @@
 
   <div id="table-container">Loading data...</div>
 
-  <!-- PapaParse library to parse CSV data -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- PapaParse library to parse CSV data --><script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
   // Columns to pull: C (Title), E (Start Date), F (Finish Date), G (Extra)
   const ALLOWED_COLUMNS = [2, 4, 5, 6];
@@ -66,7 +65,6 @@
         complete: function(results) {
           const rows = results.data;
           
-          // Fixed table header
           let html = `
             <table>
               <thead>
@@ -88,7 +86,7 @@
               if (row[2] && row[2].trim().toLowerCase() === 'title') {
                 hasReachedData = true;
               }
-              return; // Skip the sheet's header row since it's hardcoded above
+              return;
             }
 
             // Skip empty rows
@@ -97,7 +95,14 @@
             html += '<tr>';
             row.forEach((cell, colIndex) => {
               if (!ALLOWED_COLUMNS.includes(colIndex)) return;
-              html += `<td>${cell}</td>`;
+
+              // If Start Date (Col E / Index 4) is empty, display the arrow symbol
+              let content = cell;
+              if (colIndex === 4 && cell.trim() === '') {
+                content = '→';
+              }
+
+              html += `<td>${content}</td>`;
             });
             html += '</tr>';
           });
