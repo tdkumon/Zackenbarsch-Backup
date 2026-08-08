@@ -112,28 +112,46 @@
 
             rows.forEach((row) => {
               if (!hasReachedHeader) {
-                // Match ONLY when a cell strictly equals "title"
-                const hasTitleHeader = row.some(cell => cell && cell.trim().toLowerCase() === 'title');
+                // Find header row containing "title"
+                const hasTitleHeader = row.some(cell => cell && cell.trim().toLowerCase().includes('title'));
 
                 if (hasTitleHeader) {
                   hasReachedHeader = true;
 
-                  // Map column positions dynamically
+                  // Map column positions by header text keywords
                   row.forEach((cell, idx) => {
                     const text = cell ? cell.trim().toLowerCase() : '';
-                    if (text === 'title') titleIdx = idx;
-                    else if (text.includes('start')) startIdx = idx;
-                    else if (text.includes('finish')) finishIdx = idx;
-                    else if (text.includes('extra') || text.includes('playtime')) extraIdx = idx;
+                    if (!text) return;
+
+                    if (text.includes('title')) {
+                      titleIdx = idx;
+                    } else if (text.includes('start')) {
+                      startIdx = idx;
+                    } else if (text.includes('finish') || text.includes('end') || (text.includes('date') && !text.includes('start'))) {
+                      finishIdx = idx;
+                    } else if (text.includes('extra') || text.includes('play') || text.includes('time') || text.includes('hour') || text.includes('note')) {
+                      extraIdx = idx;
+                    }
                   });
 
-                  // Fallbacks if header cells in Google Sheets were empty or unmapped
-                  if (titleIdx === -1) titleIdx = 2;
-                  if (startIdx === -1 && year !== '2024') startIdx = 4;
-                  if (finishIdx === -1) finishIdx = (year === '2024' && startIdx === -1) ? 4 : 5;
-                  if (extraIdx === -1) extraIdx = 6;
+                  // Safely assign any unmapped columns to avoid index collisions
+                  const assignedIndices = [titleIdx, startIdx, finishIdx, extraIdx].filter(i => i !== -1);
+                  row.forEach((cell, idx) => {
+                    if (idx <= titleIdx || assignedIndices.includes(idx) || !cell || cell.trim() === '') return;
 
-                  // Build header HTML dynamically
+                    if (finishIdx === -1) {
+                      finishIdx = idx;
+                      assignedIndices.push(idx);
+                    } else if (extraIdx === -1) {
+                      extraIdx = idx;
+                      assignedIndices.push(idx);
+                    } else if (startIdx === -1 && year !== '2024') {
+                      startIdx = idx;
+                      assignedIndices.push(idx);
+                    }
+                  });
+
+                  // Build table headers dynamically based on mapped columns
                   tableHeadersHTML = '<tr>';
                   if (titleIdx !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
                   if (startIdx !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
@@ -191,6 +209,6 @@
 
   // Initial load for 2026
   loadSheetData('2026');
-  </script>
+</script>
 </body>
 </html>
