@@ -109,7 +109,6 @@
 <script>
   let currentYear = '2026';
 
-  // Exact column positions mapped directly from your CSV layouts
   const YEAR_CONFIGS = {
     '2026': { title: 2, start: 4, finish: 5, extra: 6 },
     '2025': { title: 2, start: 3, finish: 4, extra: 5 },
@@ -123,83 +122,128 @@
     });
     loadSheetData(year);
   }
+function loadSheetData(year) {
+  const cfg = YEAR_CONFIGS[year];
+  const container = document.getElementById('table-container');
 
-  function loadSheetData(year) {
-    const cfg = YEAR_CONFIGS[year];
+  fetch(`backup-${year}.csv?v=` + Date.now())
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.text();
+    })
+    .then(csvData => {
+      Papa.parse(csvData, {
+        complete: function(results) {
+          const rows = results.data;
+          let hasReachedData = false;
 
-    fetch(`backup-${year}.csv?v=` + Date.now())
-      .then(response => response.text())
-      .then(csvData => {
-        Papa.parse(csvData, {
-          complete: function(results) {
-            const rows = results.data;
+          // Create main table elements
+          const table = document.createElement('table');
+          const thead = document.createElement('thead');
+          const tbody = document.createElement('tbody');
 
-            let hasReachedData = false;
-            let tableBodyHTML = '';
+          // Define header mapping
+          const headerRow = document.createElement('tr');
+          const columns = [
+            { key: 'title', label: 'title', className: 'col-title' },
+            { key: 'start', label: 'start date', className: 'col-date' },
+            { key: 'finish', label: 'finish date', className: 'col-date' },
+            { key: 'extra', label: 'extra', className: 'col-extra' }
+          ];
 
-            // Build headers dynamically based on active columns for the year
-            let tableHeadersHTML = '<tr>';
-            if (cfg.title !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
-            if (cfg.start !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
-            if (cfg.finish !== -1) tableHeadersHTML += '<th class="col-date">finish date</th>';
-            if (cfg.extra !== -1) tableHeadersHTML += '<th class="col-extra">extra</th>';
-            tableHeadersHTML += '</tr>';
+          // Build header cells safely
+          columns.forEach(col => {
+            if (cfg[col.key] !== -1) {
+              const th = document.createElement('th');
+              th.className = col.className;
+              th.textContent = col.label;
+              headerRow.appendChild(th);
+            }
+          });
+          thead.appendChild(headerRow);
 
-            const activeColCount = [cfg.title, cfg.start, cfg.finish, cfg.extra].filter(i => i !== -1).length;
+          const activeColCount = columns.filter(col => cfg[col.key] !== -1).length;
 
-            rows.forEach((row) => {
-              // Locate the header row by looking for "title" in the designated title column
-              if (!hasReachedData) {
-                if (row[cfg.title] && row[cfg.title].trim().toLowerCase() === 'title') {
-                  hasReachedData = true;
-                }
-                return;
+          // Build row data safely
+          rows.forEach((row) => {
+            if (!hasReachedData) {
+              if (row[cfg.title] && row[cfg.title].trim().toLowerCase() === 'title') {
+                hasReachedData = true;
               }
+              return;
+            }
 
-              const titleText = row[cfg.title] ? row[cfg.title].trim() : '';
+            const titleText = row[cfg.title] ? row[cfg.title].trim() : '';
 
-              // Skip empty rows or dummy "x" rows
-              if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
-                return;
-              }
+            if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
+              return;
+            }
 
-              // Section header rows ending with ":"
-              if (titleText.endsWith(':')) {
-                tableBodyHTML += `<tr><td colspan="${activeColCount}" class="section-header">${titleText}</td></tr>`;
-                return;
-              }
+            const tr = document.createElement('tr');
 
-              // Data rows
-              tableBodyHTML += '<tr>';
-              if (cfg.title !== -1) {
-                tableBodyHTML += `<td class="col-title">${titleText}</td>`;
-              }
-              if (cfg.start !== -1) {
-                let startVal = row[cfg.start] ? row[cfg.start].trim() : '';
-                if (startVal === '') startVal = '→';
-                tableBodyHTML += `<td class="col-date">${startVal}</td>`;
-              }
-              if (cfg.finish !== -1) {
-                tableBodyHTML += `<td class="col-date">${row[cfg.finish] ? row[cfg.finish].trim() : ''}</td>`;
-              }
-              if (cfg.extra !== -1) {
-                tableBodyHTML += `<td class="col-extra">${row[cfg.extra] ? row[cfg.extra].trim() : ''}</td>`;
-              }
-              tableBodyHTML += '</tr>';
-            });
+            // Section headers
+            if (titleText.endsWith(':')) {
+              const td = document.createElement('td');
+              td.colSpan = activeColCount;
+              td.className = 'section-header';
+              td.textContent = titleText;
+              tr.appendChild(td);
+              tbody.appendChild(tr);
+              return;
+            }
 
-            document.getElementById('table-container').innerHTML = `
-              <table>
-                <thead>${tableHeadersHTML}</thead>
-                <tbody>${tableBodyHTML}</tbody>
-              </table>
-            `;
-          }
-        });
+            // Normal cells
+            if (cfg.title !== -1) {
+              const td = document.createElement('td');
+              td.className = 'col-title';
+              td.textContent = titleText;
+              tr.appendChild(td);
+            }
+
+            if (cfg.start !== -1) {
+              const td = document.createElement('td');
+              td.className = 'col-date';
+              const startVal = row[cfg.start] ? row[cfg.start].trim() : '';
+              td.textContent = startVal === '' ? '→' : startVal;
+              tr.appendChild(td);
+            }
+
+            if (cfg.finish !== -1) {
+              const td = document.createElement('td');
+              td.className = 'col-date';
+              td.textContent = row[cfg.finish] ? row[cfg.finish].trim() : '';
+              tr.appendChild(td);
+            }
+
+            if (cfg.extra !== -1) {
+              const td = document.createElement('td');
+              td.className = 'col-extra';
+              td.textContent = row[cfg.extra] ? row[cfg.extra].trim() : '';
+              tr.appendChild(td);
+            }
+
+            tbody.appendChild(tr);
+          });
+
+          table.appendChild(thead);
+          table.appendChild(tbody);
+
+          // Clear container and append new table
+          container.textContent = '';
+          container.appendChild(table);
+        }
       });
-  }
+    })
+    .catch(error => {
+      console.error("Failed to load sheet data:", error);
+      container.textContent = '';
+      const errorMsg = document.createElement('p');
+      errorMsg.style.color = 'red';
+      errorMsg.textContent = `Failed to load data for ${year}. Check your connection or file status.`;
+      container.appendChild(errorMsg);
+    });
+}
 
-  // Load Last Updated Timestamp
     fetch('last-updated.txt?v=' + Date.now())
       .then(response => response.text())
       .then(timestamp => {
@@ -209,7 +253,6 @@
         document.getElementById('last-updated').style.display = 'none';
       });
   
-  // Initial load for 2026
   loadSheetData('2026');
 </script>
 </body>
