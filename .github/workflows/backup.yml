@@ -17,7 +17,7 @@ jobs:
 
       - name: Download Sheet CSV
         run: |
-          curl -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv" -o backup.csv
+          curl -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0" -o backup.csv
 
       - name: Commit and Push Updated Backup
         run: |
