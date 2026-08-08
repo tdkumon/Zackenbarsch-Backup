@@ -21,7 +21,6 @@
     }
     th, td {
       text-align: left;
-      /* Adjust padding to control spacing inside cells */
       padding: 14px 18px; 
     }
     th {
@@ -29,7 +28,6 @@
       font-weight: 600;
       border-bottom: 2px solid #dee2e6;
     }
-    /* Controls row border and vertical spacing between rows */
     tr {
       border-bottom: 1px solid #edf2f7;
     }
@@ -42,11 +40,12 @@
 
   <div id="table-container">Loading data...</div>
 
-  <!-- PapaParse library to cleanly parse CSV files -->
+  <!-- PapaParse library to parse CSV data -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    // CONFIGURATION: Set column index to hide (0 = Column A, 1 = Column B, 2 = Column C)
-    const HIDDEN_COLUMN_INDEX = 1; 
+    // CONFIGURATION
+    const START_ROW = 7;           // Starts rendering from Row 7
+    const HIDDEN_COLUMN_INDEX = 3; // 0 = A, 1 = B, 2 = C, 3 = D
 
     fetch('backup.csv')
       .then(response => response.text())
@@ -55,20 +54,27 @@
           complete: function(results) {
             const rows = results.data;
             let html = '<table>';
+            let isFirstDisplayedRow = true;
 
             rows.forEach((row, rowIndex) => {
-              // Ignore empty rows
+              // Skip rows before row 7 (Index 0 is Row 1, so Row 7 is Index 6)
+              if (rowIndex < START_ROW - 1) return;
+
+              // Ignore completely empty rows
               if (row.length === 1 && row[0].trim() === '') return;
 
               html += '<tr>';
               row.forEach((cell, colIndex) => {
-                // Skip rendering the hidden column
+                // Skip Column D
                 if (colIndex === HIDDEN_COLUMN_INDEX) return;
 
-                const cellTag = (rowIndex === 0) ? 'th' : 'td';
+                // Treat the first displayed row (Row 7) as the table header header (th)
+                const cellTag = isFirstDisplayedRow ? 'th' : 'td';
                 html += `<${cellTag}>${cell}</${cellTag}>`;
               });
               html += '</tr>';
+
+              isFirstDisplayedRow = false;
             });
 
             html += '</table>';
