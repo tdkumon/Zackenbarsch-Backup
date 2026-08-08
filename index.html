@@ -53,7 +53,8 @@
 
   <div id="table-container">Loading data...</div>
 
-  <!-- PapaParse library to parse CSV data --><script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<!-- PapaParse library to parse CSV data -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
   // Columns to pull: C (Title), E (Start Date), F (Finish Date), G (Extra)
   const ALLOWED_COLUMNS = [2, 4, 5, 6];
@@ -81,16 +82,17 @@
           let hasReachedData = false;
 
           rows.forEach((row) => {
-            // Locate "title" in Column C to start reading data
+            // Check if any cell in the row contains "title" to locate the header row
             if (!hasReachedData) {
-              if (row[2] && row[2].trim().toLowerCase() === 'title') {
+              const isHeaderRow = row.some(cell => cell && cell.toLowerCase().includes('title'));
+              if (isHeaderRow) {
                 hasReachedData = true;
               }
-              return;
+              return; // Skip the header row so it isn't duplicated inside tbody
             }
 
             // Skip empty rows
-            if (row.every(cell => cell.trim() === '')) return;
+            if (!row || row.every(cell => !cell || cell.trim() === '')) return;
 
             html += '<tr>';
             row.forEach((cell, colIndex) => {
@@ -98,7 +100,7 @@
 
               // If Start Date (Col E / Index 4) is empty, display the arrow symbol
               let content = cell;
-              if (colIndex === 4 && cell.trim() === '') {
+              if (colIndex === 4 && (!cell || cell.trim() === '')) {
                 content = '→';
               }
 
