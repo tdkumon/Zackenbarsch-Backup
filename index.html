@@ -10,12 +10,35 @@
       background-color: #fafafa;
       color: #333;
     }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border: 1px solid #ced4da;
+      background: #ffffff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #495057;
+    }
+    .tab-btn.active {
+      background: #0d6efd;
+      color: white;
+      border-color: #0d6efd;
+    }
+
     table {
       border-collapse: collapse;
       background: white;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       border-radius: 6px;
       overflow: hidden;
+      width: 100%;
+      max-width: 1100px;
     }
     th, td {
       text-align: left;
@@ -34,25 +57,9 @@
       border-bottom: none;
     }
     
-    th:first-child, td:first-child {
-      width: 700px;
-    }
-
-    th:nth-child(2), td:nth-child(2) {
-      width: 170px;
-    }
-
-    th:nth-child(3), td:nth-child(3) {
-      width: 170px;
-    }
-
-    th:nth-child(4), td:nth-child(4) {
-      width: 300px;
-    }
-
-    td:nth-child(2), td:nth-child(3) {
-      text-align: center;
-    }
+    th.col-title, td.col-title { width: 500px; }
+    th.col-date, td.col-date { width: 170px; text-align: center; }
+    th.col-extra, td.col-extra { width: 300px; }
 
     td.section-header {
       font-weight: 700;
@@ -66,78 +73,118 @@
 </head>
 <body>
 
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('2026')">2026</button>
+    <button class="tab-btn" onclick="switchTab('2025')">2025</button>
+    <button class="tab-btn" onclick="switchTab('2024')">2024</button>
+  </div>
+
   <div id="table-container">Loading data...</div>
 
-<!-- PapaParse library to parse CSV data -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script>
-  const ALLOWED_COLUMNS = [2, 4, 5, 6];
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    let currentYear = '2026';
 
-  fetch('backup.csv?v=' + Date.now())
-    .then(response => response.text())
-    .then(csvData => {
-      Papa.parse(csvData, {
-        complete: function(results) {
-          const rows = results.data;
-          
-          let html = `
-            <table>
-              <thead>
-                <tr>
-                  <th>title</th>
-                  <th>start date</th>
-                  <th>finish date</th>
-                  <th>extra</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-
-          let hasReachedData = false;
-
-          rows.forEach((row) => {
-            if (!hasReachedData) {
-              if (row.some(cell => cell && cell.toLowerCase().includes('title'))) {
-                hasReachedData = true;
-              }
-              return;
-            }
-
-            const titleText = row[2] ? row[2].trim() : '';
-
-            // Skip empty rows or dummy "x" rows
-            if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
-              return;
-            }
-
-            // Detect section headers ending with ":" (e.g. "started but not finished:")
-            if (titleText.endsWith(':')) {
-              html += `<tr><td colspan="4" class="section-header">${titleText}</td></tr>`;
-              return;
-            }
-
-            // Regular data rows
-            html += '<tr>';
-            row.forEach((cell, colIndex) => {
-              if (!ALLOWED_COLUMNS.includes(colIndex)) return;
-
-              let content = cell ? cell.trim() : '';
-
-              // If Start Date (Col E / Index 4) is empty, display the arrow symbol
-              if (colIndex === 4 && content === '') {
-                content = '→';
-              }
-
-              html += `<td>${content}</td>`;
-            });
-            html += '</tr>';
-          });
-
-          html += '</tbody></table>';
-          document.getElementById('table-container').innerHTML = html;
-        }
+    function switchTab(year) {
+      currentYear = year;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === year);
       });
-    });
+      loadSheetData(year);
+    }
+
+    function loadSheetData(year) {
+      fetch(`backup-${year}.csv?v=` + Date.now())
+        .then(response => response.text())
+        .then(csvData => {
+          Papa.parse(csvData, {
+            complete: function(results) {
+              const rows = results.data;
+
+              let titleIdx = -1;
+              let startIdx = -1;
+              let finishIdx = -1;
+              let extraIdx = -1;
+              let hasReachedHeader = false;
+
+              let tableHeadersHTML = '';
+              let tableBodyHTML = '';
+
+              rows.forEach((row) => {
+                if (!hasReachedHeader) {
+                  // Find header row containing "title"
+                  const titleCellIndex = row.findIndex(cell => cell && cell.toLowerCase().includes('title'));
+                  if (titleCellIndex !== -1) {
+                    hasReachedHeader = true;
+
+                    // Dynamically map column positions based on header text
+                    row.forEach((cell, idx) => {
+                      const text = cell ? cell.trim().toLowerCase() : '';
+                      if (text.includes('title')) titleIdx = idx;
+                      else if (text.includes('start date')) startIdx = idx;
+                      else if (text.includes('finish date')) finishIdx = idx;
+                      else if (text.includes('extra')) extraIdx = idx;
+                    });
+
+                    // Build table headers dynamically based on columns found
+                    tableHeadersHTML = '<tr>';
+                    if (titleIdx !== -1) tableHeadersHTML += '<th class="col-title">title</th>';
+                    if (startIdx !== -1) tableHeadersHTML += '<th class="col-date">start date</th>';
+                    if (finishIdx !== -1) tableHeadersHTML += '<th class="col-date">finish date</th>';
+                    if (extraIdx !== -1) tableHeadersHTML += '<th class="col-extra">extra</th>';
+                    tableHeadersHTML += '</tr>';
+                  }
+                  return;
+                }
+
+                const titleText = titleIdx !== -1 && row[titleIdx] ? row[titleIdx].trim() : '';
+
+                // Skip empty or dummy rows
+                if (!row || row.every(cell => !cell || cell.trim() === '') || titleText.toLowerCase() === 'x') {
+                  return;
+                }
+
+                // Total visible column count for section headers colspan
+                const activeColCount = [titleIdx, startIdx, finishIdx, extraIdx].filter(i => i !== -1).length;
+
+                // Section header rows ending with ":"
+                if (titleText.endsWith(':')) {
+                  tableBodyHTML += `<tr><td colspan="${activeColCount}" class="section-header">${titleText}</td></tr>`;
+                  return;
+                }
+
+                // Regular data rows
+                tableBodyHTML += '<tr>';
+                if (titleIdx !== -1) {
+                  tableBodyHTML += `<td class="col-title">${row[titleIdx] ? row[titleIdx].trim() : ''}</td>`;
+                }
+                if (startIdx !== -1) {
+                  let startVal = row[startIdx] ? row[startIdx].trim() : '';
+                  if (startVal === '') startVal = '→';
+                  tableBodyHTML += `<td class="col-date">${startVal}</td>`;
+                }
+                if (finishIdx !== -1) {
+                  tableBodyHTML += `<td class="col-date">${row[finishIdx] ? row[finishIdx].trim() : ''}</td>`;
+                }
+                if (extraIdx !== -1) {
+                  tableBodyHTML += `<td class="col-extra">${row[extraIdx] ? row[extraIdx].trim() : ''}</td>`;
+                }
+                tableBodyHTML += '</tr>';
+              });
+
+              document.getElementById('table-container').innerHTML = `
+                <table>
+                  <thead>${tableHeadersHTML}</thead>
+                  <tbody>${tableBodyHTML}</tbody>
+                </table>
+              `;
+            }
+          });
+        });
+    }
+
+    // Initial load for 2026
+    loadSheetData('2026');
   </script>
 </body>
 </html>
