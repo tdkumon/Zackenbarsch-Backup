@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>tdk's tracking sheet (backup)</title>
+    <title>tdk's tracking sheet</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -61,7 +61,7 @@
       .nav-tabs {
         display: flex;
         gap: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
       }
 
       .tab-btn {
@@ -82,11 +82,48 @@
         border-color: #0d6efd;
       }
 
+      /* Search Bar Styles */
+      .search-container {
+        margin-bottom: 24px;
+        width: 85%;
+      }
+
+      #search-input {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 15px;
+        border: 2px solid #ced4da;
+        border-radius: 4px;
+        background: #ffffff;
+        color: #333;
+        outline: none;
+        transition: all 0.15s ease;
+      }
+
+      #search-input:focus {
+        border-color: #0d6efd;
+      }
+
+      /* Section Headers & Tables */
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-top: 36px;
+        margin-bottom: 12px;
+        color: #495057;
+      }
+
+      #table-container table:first-of-type + .section-title,
+      .section-title:first-child {
+        margin-top: 0;
+      }
+
       table {
         border-collapse: collapse;
         background: white;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        width: 100%;
+        width: 85%;
+        margin-bottom: 28px;
       }
 
       th,
@@ -112,25 +149,41 @@
 
       th.col-title,
       td.col-title {
-        width: 45%;
+        width: 35%;
       }
+
       th.col-date,
       td.col-date {
-        width: 90px;
+        width: 175px;
         text-align: center;
         white-space: nowrap;
       }
+
       th.col-extra,
       td.col-extra {
-        width: 40%;
+        width: auto;
       }
 
-      td.section-header {
-        font-weight: 700;
-        padding-top: 500px;
-        padding-bottom: 10px;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
+      th.col-meta,
+      td.col-meta {
+        width: 125px;
+        text-align: center;
+      }
+
+      td.col-title,
+      td.col-extra {
+        white-space: pre-line;
+      }
+
+      body[data-year="2026"] td.col-meta {
+        font-size: 13px;
+        color: #b3b3c2;
+      }
+
+      .no-results {
+        color: #888;
+        font-style: italic;
+        margin-top: 12px;
       }
 
       .last-updated-badge {
@@ -205,9 +258,21 @@
         display: none;
       }
 
+      /* 2025 Theme */
       body[data-year="2025"] {
         background-color: #ffffff;
         color: #000000;
+      }
+
+      body[data-year="2025"] #search-input {
+        border: 2px solid #000000;
+        border-radius: 0px;
+        font-family: "Noto Sans", sans-serif;
+      }
+
+      body[data-year="2025"] .section-title {
+        font-family: "Comic Sans MS", "Comic Neue", cursive;
+        color: #30714f;
       }
 
       body[data-year="2025"] th {
@@ -239,6 +304,7 @@
         border: 1px solid #ddc26c;
       }
 
+      /* 2026 Theme */
       body[data-year="2026"] {
         font-family: "Noto Sans", "Noto Sans JP", sans-serif;
         background-color: #0a0a0c;
@@ -247,13 +313,29 @@
           linear-gradient(90deg, rgba(70, 189, 198, 0.12) 1px, transparent 1px);
         background-size: 24px 24px;
         color: #f0f0f5;
-        cursor: url("media/cursor.cur"), auto;
       }
 
-      body[data-year="2026"] a,
-      body[data-year="2026"] button,
-      body[data-year="2026"] .tab-btn {
-        cursor: url("media/cursor.cur"), auto !important;
+      body[data-year="2026"] #search-input {
+        font-family: "Noto Sans JP", sans-serif;
+        background: #0f0f14;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 0px;
+        box-shadow: 4px 4px 0px #000000;
+      }
+
+      body[data-year="2026"] #search-input:focus {
+        border-color: #46bdc6;
+        box-shadow: 4px 4px 0px #46bdc6;
+      }
+
+      body[data-year="2026"] .section-title {
+        color: #46bdc6;
+        font-family: "Shippori Mincho", serif;
+        font-weight: 800;
+        border-bottom: 2px solid #46bdc6;
+        display: inline-block;
+        padding-bottom: 2px;
       }
 
       body[data-year="2026"] .marquee-2026 {
@@ -339,11 +421,8 @@
       body[data-year="2026"] th {
         background-color: #46bdc6;
         color: #ffffff;
-        font-family: "Shippori Mincho", serif;
-        font-weight: 800;
-        font-size: 15px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
+        font-family: "Comic Sans MS", "Comic Neue", cursive;
+        font-weight: normal;
         border-bottom: 3px solid #ffffff;
       }
 
@@ -368,6 +447,57 @@
         border-radius: 0px;
         font-family: "Shippori Mincho", serif;
         font-weight: 700;
+      }
+
+      @media (max-width: 900px) {
+        .bottom-right-shinobu {
+          display: none;
+        }
+      }
+
+      /* Layout alignment */
+      .search-container {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        width: 85%;
+      }
+
+      #search-input {
+        flex: 1;
+      }
+
+      #type-filter {
+        padding: 10px 14px;
+        font-size: 15px;
+        border: 2px solid #ced4da;
+        border-radius: 4px;
+        background: #ffffff;
+        color: #333;
+        outline: none;
+        cursor: pointer;
+      }
+
+      /* 2025 Theme Styling */
+      body[data-year="2025"] #type-filter {
+        border: 2px solid #000000;
+        border-radius: 0px;
+        font-family: "Noto Sans", sans-serif;
+      }
+
+      /* 2026 Theme Styling */
+      body[data-year="2026"] #type-filter {
+        font-family: "Noto Sans JP", sans-serif;
+        background: #0f0f14;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 0px;
+        box-shadow: 4px 4px 0px #000000;
+      }
+
+      body[data-year="2026"] #type-filter:focus {
+        border-color: #46bdc6;
+        box-shadow: 4px 4px 0px #46bdc6;
       }
     </style>
   </head>
@@ -396,11 +526,31 @@
       </div>
     </div>
 
-    <!--<marquee class="marquee-2026">waaaaaaaaaaaaaah</marquee>-->
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('2026')">2026</button>
       <button class="tab-btn" onclick="switchTab('2025')">2025</button>
       <button class="tab-btn" onclick="switchTab('2024')">2024</button>
+    </div>
+
+    <div class="search-container">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search by title..."
+        oninput="handleSearch()"
+      />
+      <select id="type-filter" onchange="handleSearch()">
+        <option value="All">All Types</option>
+        <option value="Anime">Anime</option>
+        <option value="Manga">Manga</option>
+        <option value="Movie">Movie</option>
+        <option value="TV Show">TV Show</option>
+        <option value="Visual Novel">Visual Novel</option>
+        <option value="Book">Book</option>
+        <option value="Game">Game</option>
+        <option value="Anime (Movie)">Anime (Movie)</option>
+        <option value="Other">Other</option>
+      </select>
     </div>
 
     <div id="table-container">Loading data...</div>
@@ -414,12 +564,43 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script>
       let currentYear = "2026";
+      let rawParsedRows = [];
 
       const YEAR_CONFIGS = {
-        2026: { title: 2, start: 4, finish: 5, extra: 6 },
-        2025: { title: 2, start: 3, finish: 4, extra: 5 },
-        2024: { title: 1, start: -1, finish: 2, extra: 3 },
+        2026: {
+          title: 2,
+          start: 4,
+          finish: 5,
+          extra: 6,
+          type: 8,
+          daysSpent: 9,
+        },
+        2025: {
+          title: 2,
+          start: 3,
+          finish: 4,
+          extra: 5,
+          type: -1,
+          daysSpent: -1,
+        },
+        2024: {
+          title: 1,
+          start: -1,
+          finish: 2,
+          extra: 3,
+          type: -1,
+          daysSpent: -1,
+        },
       };
+
+      const COLUMNS = [
+        { key: "title", label: "title", className: "col-title" },
+        { key: "start", label: "start date", className: "col-date" },
+        { key: "finish", label: "finish date", className: "col-date" },
+        { key: "extra", label: "extra", className: "col-extra" },
+        { key: "type", label: "type", className: "col-meta" },
+        { key: "daysSpent", label: "days spent", className: "col-meta" },
+      ];
 
       function switchTab(year) {
         currentYear = year;
@@ -432,9 +613,7 @@
       }
 
       function loadSheetData(year) {
-        const cfg = YEAR_CONFIGS[year];
         const container = document.getElementById("table-container");
-
         container.textContent = "Loading data...";
 
         fetch(`backup-${year}.csv?v=` + Date.now())
@@ -445,115 +624,8 @@
           .then((csvData) => {
             Papa.parse(csvData, {
               complete: function (results) {
-                const rows = results.data;
-                let hasReachedData = false;
-
-                const table = document.createElement("table");
-                const thead = document.createElement("thead");
-                const tbody = document.createElement("tbody");
-
-                const headerRow = document.createElement("tr");
-                const columns = [
-                  { key: "title", label: "title", className: "col-title" },
-                  { key: "start", label: "start date", className: "col-date" },
-                  {
-                    key: "finish",
-                    label: "finish date",
-                    className: "col-date",
-                  },
-                  { key: "extra", label: "extra", className: "col-extra" },
-                ];
-
-                columns.forEach((col) => {
-                  if (cfg[col.key] !== -1) {
-                    const th = document.createElement("th");
-                    th.className = col.className;
-                    th.textContent = col.label;
-                    headerRow.appendChild(th);
-                  }
-                });
-                thead.appendChild(headerRow);
-
-                const activeColCount = columns.filter(
-                  (col) => cfg[col.key] !== -1,
-                ).length;
-
-                rows.forEach((row) => {
-                  if (!hasReachedData) {
-                    if (
-                      row[cfg.title] &&
-                      row[cfg.title].trim().toLowerCase() === "title"
-                    ) {
-                      hasReachedData = true;
-                    }
-                    return;
-                  }
-
-                  const titleText = row[cfg.title] ? row[cfg.title].trim() : "";
-
-                  if (
-                    !row ||
-                    row.every((cell) => !cell || cell.trim() === "") ||
-                    titleText.toLowerCase() === "x"
-                  ) {
-                    return;
-                  }
-
-                  const tr = document.createElement("tr");
-
-                  if (titleText.endsWith(":")) {
-                    const td = document.createElement("td");
-                    td.colSpan = activeColCount;
-                    td.className = "section-header";
-                    td.textContent = titleText;
-                    tr.appendChild(td);
-                    tbody.appendChild(tr);
-                    return;
-                  }
-
-                  if (cfg.title !== -1) {
-                    const td = document.createElement("td");
-                    td.className = "col-title";
-                    td.textContent = titleText;
-                    tr.appendChild(td);
-                  }
-
-                  if (cfg.start !== -1) {
-                    const td = document.createElement("td");
-                    td.className = "col-date";
-                    const startVal = row[cfg.start]
-                      ? row[cfg.start].trim()
-                      : "";
-                    td.textContent = startVal === "" ? "→" : startVal;
-                    tr.appendChild(td);
-                  }
-
-                  if (cfg.finish !== -1) {
-                    const td = document.createElement("td");
-                    td.className = "col-date";
-                    td.textContent = row[cfg.finish]
-                      ? row[cfg.finish].trim()
-                      : "";
-                    tr.appendChild(td);
-                  }
-
-                  if (cfg.extra !== -1) {
-                    const td = document.createElement("td");
-                    td.className = "col-extra";
-                    td.textContent = row[cfg.extra]
-                      ? row[cfg.extra].trim()
-                      : "";
-                    tr.appendChild(td);
-                  }
-
-                  tbody.appendChild(tr);
-                });
-
-                table.appendChild(thead);
-                table.appendChild(tbody);
-
-                container.textContent = "";
-                container.appendChild(table);
+                rawParsedRows = results.data;
+                renderTables();
               },
             });
           })
@@ -567,6 +639,209 @@
           });
       }
 
+      function handleSearch() {
+        renderTables();
+      }
+
+      function renderTables() {
+        const year = currentYear;
+        const cfg = YEAR_CONFIGS[year];
+        const container = document.getElementById("table-container");
+        const searchQuery = document
+          .getElementById("search-input")
+          .value.toLowerCase()
+          .trim();
+        const selectedType = document.getElementById("type-filter").value;
+
+        if (!rawParsedRows || rawParsedRows.length === 0) return;
+
+        let hasReachedData = false;
+        const sections = [];
+        let currentSection = { title: "", rows: [] };
+
+        rawParsedRows.forEach((row) => {
+          if (!hasReachedData) {
+            if (
+              row[cfg.title] &&
+              row[cfg.title].trim().toLowerCase() === "title"
+            ) {
+              hasReachedData = true;
+            }
+            return;
+          }
+
+          const titleText = row[cfg.title] ? row[cfg.title].trim() : "";
+
+          if (
+            !row ||
+            row.every((cell) => !cell || cell.trim() === "") ||
+            titleText.toLowerCase() === "x"
+          ) {
+            return;
+          }
+
+          if (titleText.endsWith(":")) {
+            if (currentSection.rows.length > 0 || currentSection.title !== "") {
+              sections.push(currentSection);
+            }
+            currentSection = { title: titleText, rows: [] };
+            return;
+          }
+
+          currentSection.rows.push(row);
+        });
+
+        if (currentSection.rows.length > 0 || currentSection.title !== "") {
+          sections.push(currentSection);
+        }
+
+        container.textContent = "";
+        let totalMatches = 0;
+
+        sections.forEach((sec) => {
+          const filteredRows = sec.rows.filter((row) => {
+            // 1. Title Filter
+            if (searchQuery) {
+              const titleIdx = cfg.title;
+              const matchesTitle =
+                titleIdx !== -1 && row[titleIdx]
+                  ? row[titleIdx].toLowerCase().includes(searchQuery)
+                  : false;
+              if (!matchesTitle) return false;
+            }
+
+            // 2. Type Filter
+            if (selectedType !== "All") {
+              const typeIdx = cfg.type;
+              if (typeIdx !== -1) {
+                const rowType = row[typeIdx]
+                  ? row[typeIdx].trim().toLowerCase()
+                  : "";
+                const filter = selectedType.toLowerCase();
+
+                if (filter === "anime") {
+                  if (rowType !== "anime" && rowType !== "anime (movie)")
+                    return false;
+                } else if (filter === "movie") {
+                  if (rowType !== "movie" && rowType !== "anime (movie)")
+                    return false;
+                } else {
+                  if (rowType !== filter) return false;
+                }
+              }
+            }
+
+            return true;
+          });
+
+          if (filteredRows.length === 0) return;
+          totalMatches += filteredRows.length;
+
+          if (sec.title) {
+            const h2 = document.createElement("h2");
+            h2.className = "section-title";
+            h2.textContent = sec.title;
+            const secTitleLower = sec.title.toLowerCase();
+
+            // Only add the gap if there's no active search query
+            if (
+              !searchQuery &&
+              (secTitleLower.includes("started but not finished") ||
+                secTitleLower.includes("probably dropped"))
+            ) {
+              h2.style.marginTop = "175px";
+            }
+
+            container.appendChild(h2);
+          }
+
+          const table = document.createElement("table");
+          const tbody = document.createElement("tbody");
+
+          const secTitleLower = sec.title ? sec.title.toLowerCase() : "";
+          const hideHeader =
+            secTitleLower.includes("started but not finished") ||
+            secTitleLower.includes("(probably) dropped");
+
+          if (!hideHeader) {
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+
+            COLUMNS.forEach((col) => {
+              if (cfg[col.key] !== -1) {
+                const th = document.createElement("th");
+                th.className = col.className;
+                th.textContent = col.label;
+                headerRow.appendChild(th);
+              }
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+          }
+
+          filteredRows.forEach((row) => {
+            const tr = document.createElement("tr");
+
+            if (cfg.title !== -1) {
+              const td = document.createElement("td");
+              td.className = "col-title";
+              td.textContent = row[cfg.title] ? row[cfg.title].trim() : "";
+              tr.appendChild(td);
+            }
+
+            if (cfg.start !== -1) {
+              const td = document.createElement("td");
+              td.className = "col-date";
+              const startVal = row[cfg.start] ? row[cfg.start].trim() : "";
+              td.textContent = startVal === "" ? "→" : startVal;
+              tr.appendChild(td);
+            }
+
+            if (cfg.finish !== -1) {
+              const td = document.createElement("td");
+              td.className = "col-date";
+              td.textContent = row[cfg.finish] ? row[cfg.finish].trim() : "";
+              tr.appendChild(td);
+            }
+
+            if (cfg.extra !== -1) {
+              const td = document.createElement("td");
+              td.className = "col-extra";
+              td.textContent = row[cfg.extra] ? row[cfg.extra].trim() : "";
+              tr.appendChild(td);
+            }
+
+            if (cfg.type !== -1) {
+              const td = document.createElement("td");
+              td.className = "col-meta";
+              td.textContent = row[cfg.type] ? row[cfg.type].trim() : "";
+              tr.appendChild(td);
+            }
+
+            if (cfg.daysSpent !== -1) {
+              const td = document.createElement("td");
+              td.className = "col-meta";
+              td.textContent = row[cfg.daysSpent]
+                ? row[cfg.daysSpent].trim()
+                : "";
+              tr.appendChild(td);
+            }
+
+            tbody.appendChild(tr);
+          });
+
+          table.appendChild(tbody);
+          container.appendChild(table);
+        });
+
+        if (totalMatches === 0) {
+          const noResults = document.createElement("p");
+          noResults.className = "no-results";
+          noResults.textContent = "No entries found matching criteria.";
+          container.appendChild(noResults);
+        }
+      }
+
       fetch("last-updated.txt?v=" + Date.now())
         .then((response) => response.text())
         .then((timestamp) => {
@@ -576,6 +851,9 @@
         .catch(() => {
           document.getElementById("last-updated").style.display = "none";
         });
+
+      document.getElementById("type-filter").value = "All";
+      document.getElementById("search-input").value = "";
 
       switchTab("2026");
     </script>
