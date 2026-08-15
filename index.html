@@ -82,7 +82,6 @@
         border-color: #0d6efd;
       }
 
-      /* Search Bar Styles */
       .search-container {
         margin-bottom: 24px;
         width: 85%;
@@ -104,7 +103,6 @@
         border-color: #0d6efd;
       }
 
-      /* Section Headers & Tables */
       .section-title {
         font-size: 1.25rem;
         font-weight: 700;
@@ -258,7 +256,6 @@
         display: none;
       }
 
-      /* 2025 Theme */
       body[data-year="2025"] {
         background-color: #ffffff;
         color: #000000;
@@ -304,7 +301,6 @@
         border: 1px solid #ddc26c;
       }
 
-      /* 2026 Theme */
       body[data-year="2026"] {
         font-family: "Noto Sans", "Noto Sans JP", sans-serif;
         background-color: #0a0a0c;
@@ -455,7 +451,6 @@
         }
       }
 
-      /* Layout alignment */
       .search-container {
         display: flex;
         gap: 12px;
@@ -478,14 +473,12 @@
         cursor: pointer;
       }
 
-      /* 2025 Theme Styling */
       body[data-year="2025"] #type-filter {
         border: 2px solid #000000;
         border-radius: 0px;
         font-family: "Noto Sans", sans-serif;
       }
 
-      /* 2026 Theme Styling */
       body[data-year="2026"] #type-filter {
         font-family: "Noto Sans JP", sans-serif;
         background: #0f0f14;
@@ -700,7 +693,6 @@
 
         sections.forEach((sec) => {
           const filteredRows = sec.rows.filter((row) => {
-            // 1. Title Filter
             if (searchQuery) {
               const titleIdx = cfg.title;
               const matchesTitle =
@@ -710,7 +702,6 @@
               if (!matchesTitle) return false;
             }
 
-            // 2. Type Filter
             if (selectedType !== "All") {
               const typeIdx = cfg.type;
               if (typeIdx !== -1) {
@@ -743,7 +734,6 @@
             h2.textContent = sec.title;
             const secTitleLower = sec.title.toLowerCase();
 
-            // Only add the gap if there's no active search query
             if (
               !searchQuery &&
               (secTitleLower.includes("started but not finished") ||
