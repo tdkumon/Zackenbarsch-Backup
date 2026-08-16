@@ -2,11 +2,7 @@ name: Automatic Google Sheet Backup
 
 on:
   schedule:
-<<<<<<< HEAD
-    - cron: '0 */6 * * *'
-=======
     - cron: "0 */6 * * *"
->>>>>>> 2ed9fe1 (Added progress log)
   workflow_dispatch:
 
 permissions:
@@ -30,19 +26,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add trackingsheet-*.csv
-<<<<<<< HEAD
-          
-          # Only update timestamp and commit if CSV content actually changed
-          if ! git diff --quiet --staged; then
-            date -u +"%d/%m/%Y %H:%M UTC" > last-updated.txt
-            git add last-updated.txt
-=======
 
           # Only update timestamp and commit if CSV content actually changed
           if ! git diff --quiet --staged; then
             date -u +"%d/%m/%Y %H:%M UTC" > trackingsheet-last-updated.txt
             git add trackingsheet-last-updated.txt
->>>>>>> 2ed9fe1 (Added progress log)
             git commit -m "Auto-update sheet backup [skip ci]"
             git push
           fi
