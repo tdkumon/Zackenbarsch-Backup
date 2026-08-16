@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  backup:
+  trackingsheet-backup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -17,15 +17,15 @@ jobs:
 
       - name: Download Sheet CSVs
         run: |
-          curl -f -s -S -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2026" -o backup-2026.csv
-          curl -f -s -S -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2025" -o backup-2025.csv
-          curl -f -s -S -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2024" -o backup-2024.csv
+          curl -f -s -S -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2026" -o trackingsheet-2026.csv
+          curl -f -s -S -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2025" -o trackingsheet-2025.csv
+          curl -f -s -S -L "https://docs.google.com/spreadsheets/d/1Ey6jeAc_H16xKjr0d8YyihVJMkc9CQwN_R9W9XUOHpU/gviz/tq?tqx=out:csv&headers=0&sheet=2024" -o trackingsheet-2024.csv
 
       - name: Commit and Push Updated Backup
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add backup-*.csv
+          git add trackingsheet-*.csv
           
           # Only update timestamp and commit if CSV content actually changed
           if ! git diff --quiet --staged; then
