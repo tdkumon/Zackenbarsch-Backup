@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     handleSearch();
   });
 
-  fetch("progresslog-last-updated.txt?v=" + Date.now())
+  fetch("../progresslog-last-updated.txt?v=" + Date.now())
     .then((response) => response.text())
     .then((timestamp) => {
       const badge = document.getElementById("last-updated");
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (badge) badge.style.display = "none";
     });
 
-  Papa.parse("progresslog.csv", {
+  Papa.parse("../progresslog.csv", {
     download: true,
     skipEmptyLines: true,
     complete: function (results) {
