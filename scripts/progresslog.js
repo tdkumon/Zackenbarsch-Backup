@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     handleSearch();
   });
 
-  fetch("/progresslog-last-updated.txt?v=" + Date.now())
+  fetch("../progresslog-last-updated.txt?v=" + Date.now())
     .then((response) => response.text())
     .then((timestamp) => {
       const badge = document.getElementById("last-updated");
