@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (badge) badge.style.display = "none";
     });
 
-  Papa.parse("/progresslog.csv", {
+  Papa.parse("../progresslog.csv", {
     download: true,
     skipEmptyLines: true,
     complete: function (results) {
