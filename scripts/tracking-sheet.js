@@ -51,7 +51,7 @@ function loadSheetData(year) {
   const container = document.getElementById("table-container");
   container.textContent = "Loading data...";
 
-  fetch(`trackingsheet-${year}.csv?v=` + Date.now())
+  fetch(`../trackingsheet-${year}.csv?v=` + Date.now())
     .then((response) => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.text();
@@ -288,7 +288,7 @@ function formatUTCToLocal(utcString) {
   });
 }
 
-fetch("trackingsheet-last-updated.txt?v=" + Date.now())
+fetch("../trackingsheet-last-updated.txt?v=" + Date.now())
   .then((response) => response.text())
   .then((timestamp) => {
     document.getElementById("last-updated").textContent =
