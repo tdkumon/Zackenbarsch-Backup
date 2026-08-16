@@ -1,0 +1,481 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    "Roboto",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  margin: 30px;
+  background-color: #fafafa;
+  color: #333;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+a {
+  color: #38bdf8;
+  text-decoration: underline;
+  text-decoration-color: rgba(56, 189, 248, 0.4);
+  text-underline-offset: 3px;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+a:visited {
+  color: #38bdf8;
+  text-decoration-color: rgba(192, 132, 252, 0.4);
+}
+
+a:hover {
+  color: #7dd3fc;
+  text-decoration-color: #7dd3fc;
+}
+
+a:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  border: 2px solid #ced4da;
+  background: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #495057;
+  transition: all 0.15s ease;
+  box-shadow: 4px 4px 0px transparent;
+}
+
+.tab-btn.active {
+  background: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+}
+
+.search-container {
+  margin-bottom: 24px;
+  width: 85%;
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 2px solid #ced4da;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #333;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+#search-input:focus {
+  border-color: #0d6efd;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  color: #495057;
+}
+
+#table-container table:first-of-type + .section-title,
+.section-title:first-child {
+  margin-top: 0;
+}
+
+table {
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 85%;
+  margin-bottom: 28px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px 16px;
+}
+
+th {
+  background-color: #f1f3f5;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+  text-align: center;
+}
+
+tr {
+  border-bottom: 1px solid #edf2f7;
+}
+
+tr:last-child {
+  border-bottom: none;
+}
+
+th.col-title,
+td.col-title {
+  width: 35%;
+}
+
+th.col-date,
+td.col-date {
+  width: 175px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+th.col-extra,
+td.col-extra {
+  width: auto;
+}
+
+th.col-meta,
+td.col-meta {
+  width: 125px;
+  text-align: center;
+}
+
+td.col-title,
+td.col-extra {
+  white-space: pre-line;
+}
+
+body[data-year="2026"] td.col-meta {
+  font-size: 13px;
+  color: #b3b3c2;
+}
+
+.no-results {
+  color: #888;
+  font-style: italic;
+  margin-top: 12px;
+}
+
+.last-updated-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #6c757d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}
+
+.bottom-right-shinobu {
+  position: fixed;
+  bottom: 0;
+  right: 16px;
+  max-height: 250px;
+  width: auto;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.header-section {
+  min-height: 205px;
+  margin-bottom: 24px;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.header-img {
+  width: 135px;
+  height: 135px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-text h1 {
+  margin: 0;
+  padding: 4px 12px;
+  display: inline-block;
+}
+
+.header-text p {
+  margin: 0;
+  margin-top: 6px;
+  padding: 2px 8px;
+  display: inline-block;
+}
+
+.links-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.marquee-2026 {
+  display: none;
+}
+
+body[data-year="2025"] {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body[data-year="2025"] #search-input {
+  border: 2px solid #000000;
+  border-radius: 0px;
+  font-family: "Noto Sans", sans-serif;
+}
+
+body[data-year="2025"] .section-title {
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  color: #30714f;
+}
+
+body[data-year="2025"] th {
+  background-color: #30714f;
+  color: #ffffff;
+  font-weight: normal;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  border-bottom: 3px solid #000000;
+}
+
+body[data-year="2025"] tr {
+  background-color: #242832;
+  color: #000000;
+  font-family: "Noto Sans", sans-serif;
+}
+
+body[data-year="2025"] table {
+  border: 3px solid #000000;
+}
+
+body[data-year="2025"] tr:nth-child(even) {
+  background-color: #fadb78;
+}
+body[data-year="2025"] tr:nth-child(odd) {
+  background-color: #ffe799;
+}
+
+body[data-year="2025"] td {
+  border: 1px solid #ddc26c;
+}
+
+body[data-year="2026"] {
+  font-family: "Noto Sans", "Noto Sans JP", sans-serif;
+  background-color: #0a0a0c;
+  background-image:
+    linear-gradient(rgba(70, 189, 198, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(70, 189, 198, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: #f0f0f5;
+}
+
+body[data-year="2026"] #search-input {
+  font-family: "Noto Sans JP", sans-serif;
+  background: #0f0f14;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+body[data-year="2026"] #search-input:focus {
+  border-color: #46bdc6;
+  box-shadow: 4px 4px 0px #46bdc6;
+}
+
+body[data-year="2026"] .section-title {
+  color: #46bdc6;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 800;
+  border-bottom: 2px solid #46bdc6;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+body[data-year="2026"] .marquee-2026 {
+  display: block;
+  background: #46bdc6;
+  color: #ffffff;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+  padding: 4px 0;
+  margin-bottom: 20px;
+  border-top: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+body[data-year="2026"] .header-text h1 {
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: 800;
+  background-color: #46bdc6;
+  color: #ffffff;
+  letter-spacing: 1px;
+  box-shadow: 4px 4px 0px #ffffff;
+}
+
+body[data-year="2026"] .header-text p {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #000000;
+  border-left: 4px solid #46bdc6;
+}
+
+body[data-year="2026"] .header-img {
+  border: 3px solid #ffffff;
+  border-radius: 0px;
+  box-shadow: 6px 6px 0px #46bdc6;
+  transition: transform 0.15s ease-out;
+}
+
+body[data-year="2026"] .header-img:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px #46bdc6;
+}
+
+body[data-year="2026"] a {
+  color: #ffffff;
+  background-color: #1a1a22;
+  padding: 2px 6px;
+  text-decoration: none;
+  border-left: 3px solid #46bdc6;
+  font-weight: bold;
+  transition: all 0.15s ease;
+}
+
+body[data-year="2026"] a:hover {
+  background-color: #46bdc6;
+  color: #ffffff;
+}
+
+body[data-year="2026"] .tab-btn {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 800;
+  border: 2px solid #ffffff;
+  background: #121218;
+  color: #ffffff;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+body[data-year="2026"] .tab-btn.active {
+  background: #46bdc6;
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 4px 4px 0px #ffffff;
+}
+
+body[data-year="2026"] table {
+  border: 3px solid #ffffff;
+  background: #0f0f14;
+  box-shadow: 8px 8px 0px #000000;
+}
+
+body[data-year="2026"] th {
+  background-color: #46bdc6;
+  color: #ffffff;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: normal;
+  border-bottom: 3px solid #ffffff;
+}
+
+body[data-year="2026"] tr {
+  border-bottom: 1px solid #22222e;
+}
+
+body[data-year="2026"] tr:nth-child(even) {
+  background-color: #14141c;
+}
+
+body[data-year="2026"] td {
+  border: 1px solid #242433;
+  color: #e0e0ea;
+}
+
+body[data-year="2026"] .last-updated-badge {
+  background-color: #000000;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  box-shadow: 4px 4px 0px #46bdc6;
+  border-radius: 0px;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .bottom-right-shinobu {
+    display: none;
+  }
+}
+
+.search-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 85%;
+}
+
+#search-input {
+  flex: 1;
+}
+
+#type-filter {
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 2px solid #ced4da;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #333;
+  outline: none;
+  cursor: pointer;
+}
+
+body[data-year="2025"] #type-filter {
+  border: 2px solid #000000;
+  border-radius: 0px;
+  font-family: "Noto Sans", sans-serif;
+}
+
+body[data-year="2026"] #type-filter {
+  font-family: "Noto Sans JP", sans-serif;
+  background: #0f0f14;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+body[data-year="2026"] #type-filter:focus {
+  border-color: #46bdc6;
+  box-shadow: 4px 4px 0px #46bdc6;
+}

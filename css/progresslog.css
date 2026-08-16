@@ -1,0 +1,204 @@
+#table-container {
+  width: 100%;
+}
+
+#table-container table,
+body[data-year="2026"] #table-container table,
+body[data-year="2025"] #table-container table {
+  border-collapse: collapse !important;
+  background-color: #16181c !important;
+  border: 1px solid #252932 !important;
+}
+
+#table-container th,
+body[data-year="2026"] #table-container th {
+  background-color: #242832 !important;
+  color: #f0f0f5 !important;
+  border-bottom: 2px solid #3b4760 !important;
+  vertical-align: middle !important;
+}
+
+#table-container tr,
+body[data-year="2026"] #table-container tr,
+body[data-year="2025"] #table-container tr {
+  border: none !important;
+  background-color: #16181c !important;
+}
+
+#table-container td,
+body[data-year="2026"] #table-container td,
+body[data-year="2025"] #table-container td {
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: 1px solid #252932 !important;
+  border-right: 1px solid #252932 !important;
+  background-color: #16181c !important;
+  color: #e0e0ea !important;
+  vertical-align: middle !important;
+  padding: 12px 16px;
+  height: 50px;
+}
+
+th.col-date,
+td.col-date {
+  width: 100px;
+  text-align: center;
+  font-weight: 700;
+}
+
+#table-container td.col-date,
+body[data-year="2026"] #table-container td.col-date,
+body[data-year="2025"] #table-container td.col-date {
+  font-size: 1.1rem !important;
+  color: #badefc !important;
+  border-right: 2px solid #3b4760 !important;
+}
+
+th.col-title,
+td.col-title {
+  width: 35%;
+  font-weight: normal !important;
+}
+
+.title-bold {
+  font-weight: 700 !important;
+}
+
+th.col-meta {
+  text-align: center;
+  width: 220px;
+}
+
+th.col-extra,
+td.col-extra {
+  width: auto;
+}
+
+.kw-green {
+  color: #2ecc71 !important;
+}
+
+.kw-blue {
+  color: #3498db !important;
+}
+
+.kw-red {
+  color: #ea4335 !important;
+}
+
+td.col-title,
+td.col-extra,
+td.col-meta {
+  white-space: pre-line;
+}
+
+#table-container tr.day-start td,
+body[data-year="2026"] #table-container tr.day-start td {
+  border-top: 1px solid #252932 !important;
+}
+
+#table-container tr.day-entry td,
+body[data-year="2026"] #table-container tr.day-entry td {
+  border-top: 1px dotted #4a5162 !important;
+}
+
+#table-container td.col-meta,
+body[data-year="2026"] #table-container td.col-meta {
+  width: 250px;
+  text-align: left;
+  font-size: inherit !important;
+}
+
+#search-input {
+  font-weight: 700;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+}
+
+.last-updated-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #6c757d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}
+
+body[data-year="2026"] .last-updated-badge {
+  background-color: #000000;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  box-shadow: 4px 4px 0px #46bdc6;
+  border-radius: 0px;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .bottom-right-shinobu {
+    display: none;
+  }
+}
+
+td.col-title {
+  cursor: default !important;
+}
+
+.title-clickable {
+  cursor: pointer;
+  display: inline;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.title-clickable:hover {
+  text-decoration-color: inherit;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+#search-input {
+  min-width: 250px !important;
+  width: 100%;
+  box-sizing: border-box;
+  transition: none !important;
+}
+
+.search-wrapper.title-active #search-input {
+  width: auto;
+  flex: 0 0 auto;
+  transition: none !important;
+}
+
+#clear-filter-btn {
+  display: none;
+  padding: 8px 14px;
+  background-color: #242832;
+  color: #f0f0f5;
+  border: 1px solid #3b4760;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+#clear-filter-btn:hover {
+  background-color: #3b4760;
+}
+
+.search-wrapper.title-active #clear-filter-btn {
+  display: inline-block;
+}
