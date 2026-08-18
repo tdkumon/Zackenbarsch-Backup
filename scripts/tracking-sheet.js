@@ -9,6 +9,7 @@ const YEAR_CONFIGS = {
     extra: 6,
     type: 8,
     daysSpent: 9,
+    comment: 10, // Column K
   },
   2025: {
     title: 2,
@@ -17,6 +18,7 @@ const YEAR_CONFIGS = {
     extra: 5,
     type: -1,
     daysSpent: -1,
+    comment: 10, // Column K
   },
   2024: {
     title: 1,
@@ -25,6 +27,7 @@ const YEAR_CONFIGS = {
     extra: 3,
     type: -1,
     daysSpent: -1,
+    comment: 10, // Column K
   },
 };
 
@@ -36,6 +39,38 @@ const COLUMNS = [
   { key: "type", label: "type", className: "col-meta" },
   { key: "daysSpent", label: "days spent", className: "col-meta" },
 ];
+
+function escapeHTML(str) {
+  if (!str) return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderNoteCell(note, comment) {
+  const escapedNote = escapeHTML(note);
+  if (!comment) return escapedNote;
+
+  const escapedComment = escapeHTML(comment);
+  const isLong = comment.length > 150 || comment.split("\n").length > 3;
+
+  return `${escapedNote}<div class="comment-corner-mark"></div><div class="comment-popover"><div class="comment-popover-header">Comment</div><div class="comment-popover-body ${isLong ? "is-truncated" : ""}">${escapedComment}</div>${isLong ? `<button type="button" class="comment-expand-btn" onclick="toggleCommentExpand(this, event)">Show more</button>` : ""}</div>`;
+}
+
+function toggleCommentExpand(btn, event) {
+  event.stopPropagation();
+  const body = btn.previousElementSibling;
+  if (body.classList.contains("is-truncated")) {
+    body.classList.remove("is-truncated");
+    btn.textContent = "Show less";
+  } else {
+    body.classList.add("is-truncated");
+    btn.textContent = "Show more";
+  }
+}
 
 function switchTab(year) {
   currentYear = year;
@@ -234,7 +269,15 @@ function renderTables() {
       if (cfg.extra !== -1) {
         const td = document.createElement("td");
         td.className = "col-extra";
-        td.textContent = row[cfg.extra] ? row[cfg.extra].trim() : "";
+        const noteVal = row[cfg.extra] ? row[cfg.extra].trim() : "";
+        const commentVal =
+          cfg.comment !== -1 && row[cfg.comment] ? row[cfg.comment].trim() : "";
+
+        if (commentVal) {
+          td.innerHTML = renderNoteCell(noteVal, commentVal);
+        } else {
+          td.textContent = noteVal;
+        }
         tr.appendChild(td);
       }
 

@@ -138,6 +138,7 @@ function renderProgressLog(rows) {
     const col2 = (row[2] || "").trim();
     const col3 = (row[3] || "").trim();
     const col4 = (row[4] || "").trim();
+    const col5 = (row[5] || "").trim(); // Column F
 
     if (col1.match(/^[A-Za-z]+\s+\d{4}$/)) {
       currentMonthTitle = col1;
@@ -176,6 +177,7 @@ function renderProgressLog(rows) {
         title: col2,
         progress: col3,
         note: col4,
+        comment: col5, // Stored Column F text
       });
     }
   });
@@ -192,7 +194,14 @@ function renderProgressLog(rows) {
         <tr>
           <th class="col-date">date</th>
           <th class="col-title">title</th>
-          <th class="col-meta">progress</th>
+          <th class="col-meta">
+            progress
+            <div class="comment-corner-mark"></div>
+            <div class="comment-popover">
+              <div class="comment-popover-header">COMMENT</div>
+              <div class="comment-popover-body">if there are two values in two lines (like episode 1 in one line, then episode 2 in the next), it means i slept in between (like i watched episode 1 at 2 AM, went to sleep, then watched episode 2 some time after i woke up, but still on the same date)</div>
+            </div>
+          </th>
           <th class="col-extra">note</th>
         </tr>
       </thead>
@@ -217,7 +226,7 @@ function renderProgressLog(rows) {
         html += `
           <td class="col-title">${formatTitle(entry.title)}</td>
           <td class="col-meta">${escapeHTML(entry.progress)}</td>
-          <td class="col-extra">${escapeHTML(entry.note)}</td>
+          <td class="col-extra">${renderNoteCell(entry.note, entry.comment)}</td>
         `;
 
         tr.innerHTML = html;
@@ -230,6 +239,28 @@ function renderProgressLog(rows) {
   });
 
   document.body.setAttribute("data-year", activeYear);
+}
+
+function renderNoteCell(note, comment) {
+  const escapedNote = escapeHTML(note);
+  if (!comment) return escapedNote;
+
+  const escapedComment = escapeHTML(comment);
+  const isLong = comment.length > 150 || comment.split("\n").length > 3;
+
+  return `${escapedNote}<div class="comment-corner-mark"></div><div class="comment-popover"><div class="comment-popover-header">Comment</div><div class="comment-popover-body ${isLong ? "is-truncated" : ""}">${escapedComment}</div>${isLong ? `<button type="button" class="comment-expand-btn" onclick="toggleCommentExpand(this, event)">Show more</button>` : ""}</div>`;
+}
+
+function toggleCommentExpand(btn, event) {
+  event.stopPropagation();
+  const body = btn.previousElementSibling;
+  if (body.classList.contains("is-truncated")) {
+    body.classList.remove("is-truncated");
+    btn.textContent = "Show less";
+  } else {
+    body.classList.add("is-truncated");
+    btn.textContent = "Show more";
+  }
 }
 
 function handleSearch() {
@@ -354,3 +385,4 @@ function escapeHTML(str) {
 // Expose functions globally for inline HTML handlers
 window.clearFilter = clearFilter;
 window.handleManualInput = handleManualInput;
+window.toggleCommentExpand = toggleCommentExpand;

@@ -35,8 +35,9 @@ body[data-year="2025"] #table-container td {
   background-color: #16181c !important;
   color: #e0e0ea !important;
   vertical-align: middle !important;
-  padding: 12px 16px;
+  padding: 6px 16px !important; /* Reduced from 12px to 6px */
   height: 50px;
+  line-height: 1.2; /* Tightens line spacing so 2 lines fit in 50px */
 }
 
 th.col-date,
@@ -201,4 +202,118 @@ td.col-title {
 
 .search-wrapper.title-active #clear-filter-btn {
   display: inline-block;
+}
+
+td.col-extra {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Position triangle at exact top-right of the cell */
+.comment-corner-mark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 10px 0;
+  border-color: transparent #46bdc6 transparent transparent;
+  pointer-events: none;
+}
+
+/* Hover Popover Box */
+.comment-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  width: 280px;
+  background-color: #1e222a;
+  border: 1px solid #3b4760;
+  box-shadow: 4px 4px 0px #000000;
+  padding: 10px 12px;
+  z-index: 999;
+  color: #e0e0ea;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  word-break: break-word;
+  border-radius: 2px;
+}
+
+body[data-year="2026"] .comment-popover {
+  background-color: #121418;
+  border: 2px solid #ffffff;
+  box-shadow: 4px 4px 0px #46bdc6;
+}
+
+td.col-extra:hover .comment-popover {
+  display: block;
+}
+
+.comment-popover-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #46bdc6;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #252932;
+  padding-bottom: 4px;
+}
+
+.comment-popover-body {
+  color: #f0f0f5;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.comment-popover-body.is-truncated {
+  max-height: 80px;
+  overflow: hidden;
+  position: relative;
+}
+
+.comment-popover-body.is-truncated::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to bottom, transparent, #1e222a);
+}
+
+body[data-year="2026"] .comment-popover-body.is-truncated::after {
+  background: linear-gradient(to bottom, transparent, #121418);
+}
+
+.comment-expand-btn {
+  margin-top: 6px;
+  background: none;
+  border: none;
+  color: #46bdc6;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.comment-expand-btn:hover {
+  color: #ffffff;
+}
+
+/* Allow corner mark and popover positioning on progress header */
+th.col-meta {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Show comment popover when hovering over progress header */
+th.col-meta:hover .comment-popover {
+  display: block;
+  font-family: "Noto Sans", "Noto Sans JP", sans-serif;
 }
